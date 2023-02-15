@@ -1,0 +1,106 @@
+" Install vim-plug if not found
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent execute '!curl -fLo '.data_dir.'/autoload/plug.vim --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+call plug#begin()
+Plug 'guns/vim-clojure-highlight'
+Plug 'guns/vim-clojure-static'
+Plug 'luochen1990/rainbow'
+
+Plug 'tpope/vim-dispatch'
+Plug 'tpope/vim-fireplace'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-leiningen'
+Plug 'tpope/vim-projectionist'
+Plug 'tpope/vim-classpath'
+Plug 'tpope/vim-commentary'
+
+Plug 'easymotion/vim-easymotion'
+Plug 'pangloss/vim-javascript'
+call plug#end()
+
+set nocompatible	" no vi-compatible
+set viminfo+=n~/.vim/viminfo    " instead of homedir
+
+set laststatus=2	" always show status line
+set bs=2		    " allow backspacing over everything in insert mode
+set cindent		    " always set C indenting on (or try smartindent?)
+set ruler		    " Show row,column in status bar.
+set ignorecase		" ignore case on searches
+set tags=./tags,tags,/usr/local/i386-mingw32-4.3.0/i386-mingw32/include/tags
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
+set expandtab
+set history=1000
+"set number
+"set list
+
+set statusline=%{fugitive#statusline()}
+"set statusline+=\ %t       "tail of the filename
+set statusline+=\ %F       "full path of the filename
+set statusline+=\ [%{strlen(&fenc)?&fenc:'none'}, "file encoding
+set statusline+=%{&ff}] "file format
+set statusline+=%h      "help file flag
+set statusline+=%m      "modified flag
+set statusline+=%r      "read only flag
+set statusline+=%y      "filetype
+set statusline+=%=      "left/right separator
+set statusline+=%c,     "cursor column
+set statusline+=%l/%L   "cursor line/total lines
+set statusline+=\ %P    "percent through file
+
+highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+"match OverLength /\%>80v.\+/ 
+"match OverLength /\%81v.\+/
+
+set go-=T
+set bg=dark
+if &background == "dark"
+    hi normal guibg=black
+endif
+"colorscheme torte
+"set transparency=15
+
+"let Tlist_Ctags_Cmd='/opt/local/bin/ctags'
+
+noremap ,l :b#
+noremap ,p :set invpaste paste?<CR>
+noremap ,d :e ++ff=dos %
+noremap ,w !} fmt -80
+noremap ,b :ls<CR>:buffer<Space>
+noremap ,c :!cscope -bkRq<CR>:cs reset<CR><CR>                                      
+"noremap MD` i`<C-O>$`<ESC>
+"noremap MD[ i[<C-O>$]<ESC>
+
+"Markdown to HTML
+nmap ,md :%!/usr/local/bin/Markdown.pl --html4tags
+
+let g:rainbow_active = 1
+"au VimEnter * RainbowParenthesesToggle
+"au Syntax * RainbowParenthesesLoadRound
+"au Syntax * RainbowParenthesesLoadSquare
+"au Syntax * RainbowParenthesesLoadBraces
+
+" " EasyMotion
+" " https://github.com/easymotion/vim-easymotion#minimal-configuration-tutorial
+" let g:EasyMotion_do_mapping = 0 " Disable default mappings
+
+" " Jump to anywhere you want with minimal keystrokes, with just one key binding.
+" " `s{char}{label}`
+" nmap s <Plug>(easymotion-overwin-f)
+" " or
+" " `s{char}{char}{label}`
+" " Need one more keystroke, but on average, it may be more comfortable.
+" nmap s <Plug>(easymotion-overwin-f2)
+
+" " Turn on case-insensitive feature
+" let g:EasyMotion_smartcase = 1
+
+" " JK motions: Line motions
+" map <Leader>j <Plug>(easymotion-j)
+" map <Leader>k <Plug>(easymotion-k)
+
+source ~/.vim/plugins/cscope_maps.vim
