@@ -1,0 +1,49 @@
+#!/bin/sh
+
+### cscope_setup - Create cscope.files and cscope.out for a directory tree.
+### Ignore hidden files and directories (.??*) and things ending in -old.
+
+### Process args and check syntax.
+dir=.
+if [ $# -eq 2 -a "x$1" = x-o ]
+then
+	dir="$2"
+elif [ $# -ne 0 ]
+then
+	echo 1>&2 "usage: cscope_setup [ -o dirToPutFilesIn ]"
+	exit 1
+fi
+
+### Generate the list of files for cscope to process.
+rm -f $dir/cscope.files
+find >$dir/cscope.files \
+	. \
+	-follow \
+		\( -name SCCS -o -name '.\?\?*' -o -name '*-old' \) \
+		-prune \
+	-o \
+		\( \
+				-type f \
+			-a \
+				\( \
+					-name '*.[csSh]'	-o \
+					-name '*.sh'		-o \
+					-name '*.java'		-o \
+					-name '[mM]ake*'	-o \
+					-name 'GNUmakefile'	-o \
+					-name 'build'		-o \
+					-name '*.mk'		-o \
+					-name '*.gmk'		-o \
+					-name '*.asm'		-o \
+					-name '*.cc'		-o \
+					-name '*.hh'		-o \
+					-name '*.m4'		-o \
+					-name '*.properties'	-o \
+					-name 'properties.\*.template' -o \
+					-name '*.[ch]pp' \
+				\) \
+		\) \
+		-print
+
+### Invoke cscope to generate its database.
+cscope -b -i $dir/cscope.files -f $dir/cscope.out

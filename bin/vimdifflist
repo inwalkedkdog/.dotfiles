@@ -1,0 +1,3 @@
+#!/bin/bash
+
+vimdiff -c 'set list' $@

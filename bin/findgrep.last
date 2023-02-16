@@ -1,0 +1,47 @@
+#!/bin/ksh
+#set -x
+
+gflags=
+suffix=
+match=
+while getopts g:n:m: opt
+do
+	case $opt in
+	g)
+		gflags="-$OPTARG"
+		;;
+	n)
+		suffix="$OPTARG"
+		;;
+	m)
+		match="$OPTARG"
+		suffix="x"
+		;;
+	*)
+		break
+		;;
+	esac
+done
+
+shift $(($OPTIND - 1))
+pattern="$*"
+
+exec find . -follow \( -name ".git" -o -name tags -o -name ctags.files -o -name "*.o" \) -prune -o \( -name \*$suffix \) -print -o \( -name "\*$match\*" \) -print | xargs grep $gflags "$pattern"
+
+
+
+
+
+
+
+
+
+#exec find . -follow \( -name SCCS -o -name Codemgr_wsdata -o -name wx -o -name cscope.out -o -name tags -o -name ctags.files -o -name "*.o" -o -name "vbsc_sim" \) -prune -o \( -name \*$suffix \) -print -o \( -name "\*$match\*" \) -print | xargs grep $gflags "$pattern"
+
+#exec find . -follow \( -name SCCS -o -name Codemgr_wsdata -o -name wx -o -name cscope.out -o -name tags -o -name ctags.files -o -name "*.o" -o -name "*mp3" -o -name "vbsc_sim" \) -prune -o \( -name \*$suffix \) -print | xargs grep $gflags "$pattern"
+
+#exec find . \( -name SCCS -prune \) -o \( -name \*$suffix1 -o -name \*$suffix2 \) -print | xargs grep $gflags "$pattern"
+
+# exec find $* \( \! -name s.\* -a \( -name \*.\[chsS\] -o -name \*.fth -o -name \*.tok -o -name \*.fcode -o -name Makefile -o -name dropins.src -o -name \*.mk \) \) -print |xargs grep $gflags "$pattern" /dev/null
+
+

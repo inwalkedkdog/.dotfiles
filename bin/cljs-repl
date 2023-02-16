@@ -1,0 +1,3 @@
+#!/bin/bash
+# rlwrap -r -m '\\"' -b "(){}[],^%3@\\\";:'" lein trampoline cljsbuild repl-$1
+rlwrap lein trampoline cljsbuild repl-$1

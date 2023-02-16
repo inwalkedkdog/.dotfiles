@@ -1,0 +1,5 @@
+#!/bin/bash
+# https://stackoverflow.com/questions/10665396/converting-the-hash-tag-timestamps-in-history-file-to-desired-string
+# usage: fhistory .bash_history
+
+paste -sd '#\n' $1 | awk -F"#" '{d=$2 ; $2="";print NR" "strftime("%d/%m/%y %T",d)" "$0}'

@@ -1,0 +1,3 @@
+#! /bin/sh
+chrome --headless --disable-gpu --repl --remote-debugging-port=9222 $1
+
