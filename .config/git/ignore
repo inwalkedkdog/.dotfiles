@@ -1,0 +1,8 @@
+*.swp
+a.out*
+.DS_Store
+.DocumentRevisions-V100/
+.TemporaryItems/
+.Trashes/
+.VolumeIcon.icns
+.fseventsd/

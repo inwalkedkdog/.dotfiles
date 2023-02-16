@@ -1,0 +1,37 @@
+# https://gist.github.com/ChrisWills/1337178
+# Allow bold colors - necessary for some reason
+attrcolor b ".I"
+
+maptimeout 5 # fix Esc for vim and emacs
+
+# Tell screen how to set colors. AB = background, AF=foreground
+termcapinfo xterm 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
+
+# Erase background with current bg color
+defbce "on"
+
+# Enable 256 color term
+term xterm-256color
+
+hardstatus alwayslastline 
+# Very nice tabbed colored hardstatus line
+hardstatus string '%{= Kd} %{= Kd}%-w%{= Kr}[%{= KW}%n %t%{= Kr}]%{= Kd}%+w %-= %{KG} %H%{KW}|%{KY}%101`%{KW}|%D %M %d %Y%{= Kc} %C%A%{-}'
+# OLD: caption always "%{=b}%?%F%:%45=%n*%f %t%?%?%F%{r}%:%{s kk}%?%H%?%F%{-}%? %L=%-Lw%45L>%?%F%{g}%?%n*%f %t%?%F%{-}%?%+Lw%-17= %?%F%{y}%?%c %Y-%m-%d%?"
+
+vbell on
+startup_message off
+# this conflicts with vim windows commands:
+# escape "^Ww"
+# shell /bin/zsh
+defscrollback 10000
+
+chdir /Volumes/dev
+screen -t d 0
+chdir /Volumes/dev
+screen -t i 1
+select 0
+
+# logfile /Volumes/ioturbine/notes/screenlog-%Y%m%d-%c:%s
+
+# disable C-a s, which freezes the screen; can be resolved with C-a q
+bind s 

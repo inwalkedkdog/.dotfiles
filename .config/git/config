@@ -1,0 +1,104 @@
+[user]
+   name = "Kevin Rathbun "
+	email = 18218688+in-walked-kdog@users.noreply.github.com
+
+[github]
+	user = in-walked-kdog
+
+[init]
+	defaultBranch = master
+
+# https://www.jvt.me/posts/2019/03/20/git-rewrite-url-https-ssh/
+[url "ssh://git@github.com/"]
+        pushInsteadOf = https://github.com/
+
+[core]
+   excludesfile = ${XDG_CONFIG_HOME}/git/ignore
+   editor = vim
+   whitespace=fix,-indent-with-non-tab,trailing-space,cr-at-eol
+
+[diff]
+   tool     = vimdiff
+   guitool  = p4merge
+
+[difftool]
+   #cmd = /Applications/p4merge.app/Contents/Resources/launchp4merge "\"$PWD/$BASE\"" "\"$PWD/$REMOTE\"" "\"$PWD/$LOCAL\"" "\"$PWD/$MERGED\""
+   prompt = false
+   #cmd = p4merge \"$LOCAL\" \"$REMOTE\"
+
+[merge]
+   tool = vimdiff
+   #tool = p4merge
+   keepBackup = false
+
+[alias]
+   vimdiff = difftool -y -t vimdiff -R
+   #vimdifflist = difftool --no-prompt --extcmd 'vimdiff -c \'set list\'' "$@"
+   sync = "!sh -c 'git checkout --quiet --detach && git fetch upstream 4.2:4.2 && git fetch upstream iof_daemon_based:iof_daemon_based && git fetch upstream R4_5_IOF_SHARED_WB:4.5 && git checkout --quiet -'"
+   pushorigin = "!sh -c 'git push origin 4.2 && git push origin iof_daemon_based && git push origin 4.5'"
+   st = status --ignore-submodules=dirty
+   co = checkout
+   br = branch
+   brv = branch -vv
+   ci = commit
+   df = diff
+   dc = diff --cached
+   wip = !"git add -A; git ls-files --deleted -z | xargs -0 git rm; git commit -m \"wip\""
+   unwip = !"git log -n 1 | grep -q -c wip && git reset HEAD~1"
+   rb = !"git wip;git rebase -i origin/master;git unwip"
+   pr = !"git fetch;git wip;git rebase --stat origin;git unwip;git heads"
+   head = !"git log -n1"
+   lost = !"git fsck | awk '/dangling commit/ {print $3}' | git show --format='SHA1: %C(yellow)%h%Creset %f' --stdin | awk '/SHA1/ {sub(\"SHA1: \", \"\"); print}'"
+   heads = !"git log origin/master.. --format='%Cred%h%Creset;%C(yellow)%an%Creset;%H;%Cblue%f%Creset' | git name-rev --stdin --always --name-only | column -t -s';'"
+   lg = log --graph --pretty=oneline --abbrev-commit --tags --decorate=short
+   #lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+   lg1 = log --graph --abbrev-commit --decorate --date=relative --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)'
+   lg1h = !"git lg1 -10"
+   lg2 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset) %C(green)(%cr)%C(reset) %C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)'
+   lg2h = !"git lg2 -10"
+   lol = log --graph --decorate --pretty=oneline --abbrev=commit
+   lola = log --graph --decorate --pretty=oneline --abbrev=commit --all
+   sh = show --pretty=raw
+   lh = log --pretty=format:"%h %s" --graph
+   dump = cat-file -p
+   type = cat-file -t
+	aliases = config --get-regexp ^alias\\.
+
+[branch]
+	autoSetupMerge = always
+
+[color]
+   ui = true
+   pager = true
+   diff = auto
+   status = auto
+   branch = auto
+
+[color "diff"]
+   whitespace = red reverse
+
+[color "status"]
+   added = yellow
+   changed = green
+   untracked = cyan
+
+[rerere]
+	enabled = 1
+	autoupdate = 1
+
+[push]
+	default = simple
+	followTags = true
+
+[mergetool "p4merge"]
+   # this invocation handles spaces in paths:
+   # cmd = /Applications/p4merge.app/Contents/Resources/launchp4merge "\"$PWD/$BASE\"" "\"$PWD/$REMOTE\"" "\"$PWD/$LOCAL\"" "\"$PWD/$MERGED\""
+   cmd = p4merge "$BASE" "$LOCAL" "$REMOTE" "$MERGED"
+   keepTemporaries = false
+   trustExitCode = false
+   keepBackup = false
+
+[difftool "sourcetree"]
+   cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+   path = 
+

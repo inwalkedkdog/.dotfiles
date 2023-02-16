@@ -87,6 +87,7 @@ function less () {      # https://zsh.sourceforge.io/Guide/zshguide05.html
 
 fignore+=(.DS_Store)
 
+alias cat=bat
 alias his="history -20"
 alias more="less -i"
 
