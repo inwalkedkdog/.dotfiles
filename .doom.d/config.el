@@ -40,10 +40,17 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-moonlight)
+(setq doom-theme 'modus-vivendi)
 
 ;; start in fullscreen
 (add-hook 'window-setup-hook #'toggle-frame-fullscreen)
+
+;; https://docs.doomemacs.org/v21.12/#/how-do-i.../include-underscores-in-evil-word-motions
+;; gives the underscore the word syntax-class
+(modify-syntax-entry ?_ "w")
+
+;; notmuch
+(after! notmuch (set-popup-rule! "^\\*notmuch-hello" :ignore t))
 
 ;; SCHEME
 (setq geiser-chez-binary "chez")

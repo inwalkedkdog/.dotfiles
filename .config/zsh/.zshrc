@@ -6,29 +6,40 @@ fi
 
 source ${ZDOTDIR}/antigen.zsh
 
-antigen use oh-my-zsh
 
-antigen bundle marlonrichert/zsh-autocomplete@main
 antigen bundle zsh-users/zsh-syntax-highlighting
 
 antigen theme romkatv/powerlevel10k
 
 antigen apply
 
-# source ~/.zsh-plugins/powerlevel10k/powerlevel10k.zsh-theme
-# source ~/.zsh-plugins/zsh-autocomplete/zsh-autocomplete.plugin.zsh
-# zsh-syntax-highlighting uses the add-zle-hook-widget facility to install a zle-line-pre-redraw hook.
-# Hooks are run in order of registration, therefore, z-sy-h must be sourced (and register its hook)
-# after anything else that adds hooks that modify the command-line buffer.
-# source ~/.zsh-plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+autoload -U compinit; compinit
 
-zstyle ':autocomplete:*' insert-unambiguous yes
-zstyle ':autocomplete:*' fzf-completion yes
-zstyle ':completion:*:warnings' format ''
-zstyle ':autocomplete:*' min-input 1
-bindkey -M menuselect '\r' accept-line
-zle -A {.,}history-incremental-search-forward
-zle -A {.,}history-incremental-search-backward
+# https://thevaluable.dev/zsh-completion-guide-examples/
+# ^x h for completion help
+zstyle ':completion:*' completer _extensions _complete _approximate
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path "$XDG_CACHE_HOME/zsh/.zcompcache"
+zstyle ':completion:*' menu select                                                  # search for fuzzy-search ; interactive to filter completion menu
+zstyle ':completion:*:*:*:*:descriptions' format '%F{green}-- %d --%f'              # descriptions depending on the type of match
+zstyle ':completion:*:*:*:*:corrections' format '%F{yellow}!- %d (errors: %e) -!%f' # for completer _approximate
+zstyle ':completion:*:messages' format ' %F{purple} -- %d --%f'
+zstyle ':completion:*:warnings' format ' %F{red}-- no matches found --%f'
+zstyle ':completion:*' group-name ''                                                # group different match types under their descriptions
+zstyle ':completion:*:*:-command-:*:*' group-order alias builtins functions commands    # order of match type descriptions
+zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}                       # set value to $LS_COLORS, normally used by 'ls --color=auto'
+
+zmodload zsh/complist
+bindkey -M menuselect 'h' vi-backward-char
+bindkey -M menuselect 'k' vi-up-line-or-history
+bindkey -M menuselect 'l' vi-forward-char
+bindkey -M menuselect 'j' vi-down-line-or-history
+
+# https://unix.stackexchange.com/questions/6620/how-to-edit-command-line-in-full-screen-editor-in-zsh
+autoload -z edit-command-line
+zle -N edit-command-line
+bindkey "^X^E" edit-command-line
+
 
 [ -f ${ZDOTDIR}/.fzf.zsh ] && source ${ZDOTDIR}/.fzf.zsh
 # Use fd instead of the default find command for listing path candidates.
@@ -39,10 +50,11 @@ _fzf_compgen_path() {
 _fzf_compgen_dir() {
   fd --type d --hidden --follow --exclude ".git" . "$1"
 }
-export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix'
+# --hidden to search dotfiles
+export FZF_DEFAULT_COMMAND='fd --type f --hidden --strip-cwd-prefix'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
-bindkey -v
+export BAT_THEME="ansi"
 
 HISTFILE="$XDG_STATE_HOME/zsh/history"
 HISTSIZE=50000
@@ -71,12 +83,11 @@ function less () {      # https://zsh.sourceforge.io/Guide/zshguide05.html
 
     for arg in $*; do
         case $arg in
-            (*.bz2) args[$i]="=(bunzip2 -c ${(q)arg})"
+            (*.bz2)     args[$i]="=(bunzip2 -c ${(q)arg})"
                 ;;
-                # this assumes your zcat is the one installed with gzip:
-                (*.(gz|Z)) args[$i]="=(zcat ${(q)arg})"
+            (*.(gz|Z))  args[$i]="=(zcat ${(q)arg})"        # assumes zcat is the one installed with gzip
                 ;;
-            (*) args=${(q)arg}
+            (*)         args=${(q)arg}
                 ;;
         esac
         (( i++ ))
@@ -159,5 +170,8 @@ if [ -f "/Users/kevinrathbun/mambaforge/etc/profile.d/mamba.sh" ]; then
     . "/Users/kevinrathbun/mambaforge/etc/profile.d/mamba.sh"
 fi
 # <<< conda initialize <<<
+
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
 
 [[ ! -f "$ZDOTDIR"/.p10k.zsh ]] || source "$ZDOTDIR"/.p10k.zsh
